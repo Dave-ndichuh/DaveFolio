@@ -16,15 +16,14 @@ $contact->from_name = $_POST['name'];
 $contact->from_email = $_POST['email'];
 $contact->subject = $_POST['subject'];
 
-// Optional: Uncomment to enable SMTP (required by some hosting providers)
- /*
 $contact->smtp = array(
-  'host' => 'smtp.your-email-provider.com',
-  'username' => 'your-email@example.com',
-  'password' => 'your-email-password',
-  'port' => '587' // or 465 for SSL
+  'host' => 'smtp.gmail.com',
+  'username' => 'machahdavis@gmail.com',
+  'password' => 'DaveAccounts@gmail.com', // ← use your App Password here
+  'port' => '587',
+  'encryption' => 'tls'
 );
-*/
+
 
 $contact->add_message($_POST['name'], 'From');
 $contact->add_message($_POST['email'], 'Email');
