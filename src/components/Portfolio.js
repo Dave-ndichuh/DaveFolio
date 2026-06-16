@@ -2,12 +2,34 @@ import styles from "./Portfolio.module.css";
 import Image from "next/image";
 
 const projects = [
-  { id: 1, title: "Productivity App", category: "App", img: "/assets/img/portfolio/app-1.jpg" },
-  { id: 2, title: "Customer Database", category: "Database", img: "/assets/img/portfolio/product-1.jpeg" },
-  { id: 3, title: "Startup Branding", category: "Graphics", img: "/assets/img/portfolio/branding-1.jpg" },
-  { id: 4, title: "Book Collection Web", category: "Web", img: "/assets/img/portfolio/books-1.jpg" },
-  { id: 5, title: "Meal Planning App", category: "App", img: "/assets/img/portfolio/app-2.jpg" },
-  { id: 6, title: "Sales Inventory", category: "Database", img: "/assets/img/portfolio/product-2.png" },
+  { 
+    id: 1, 
+    title: "ShiftsGarden", 
+    category: "SaaS Application", 
+    description: "A modern shift management and employee scheduling platform built with Next.js, Tailwind CSS, and Firebase.",
+    img: "/assets/img/portfolio/shifts_garden.png" 
+  },
+  { 
+    id: 2, 
+    title: "BriteSpot", 
+    category: "Enterprise App", 
+    description: "A robust microservices-based application featuring a Next.js frontend, NestJS backend, and Dockerized Turborepo setup.",
+    img: "/assets/img/portfolio/brite_spot.png" 
+  },
+  { 
+    id: 3, 
+    title: "AutoHub POS", 
+    category: "E-Commerce / POS", 
+    description: "A comprehensive inventory and point-of-sale management system tailored specifically for auto spare parts.",
+    img: "/assets/img/portfolio/autohub_pos.png" 
+  },
+  { 
+    id: 4, 
+    title: "EfyRun", 
+    category: "Full-Stack App", 
+    description: "A high-performance full-stack web application with decoupled frontend and backend architectures.",
+    img: "/assets/img/portfolio/efyrun.png" 
+  }
 ];
 
 export default function Portfolio() {
@@ -16,7 +38,7 @@ export default function Portfolio() {
       <div className={styles.container}>
         <div className={styles.sectionTitle}>
           <h2 className="neon-text">Portfolio</h2>
-          <p>Some of the recent projects I've brought to life.</p>
+          <p>A curated selection of my recent full-stack projects and SaaS applications.</p>
         </div>
 
         <div className={styles.grid}>
@@ -34,6 +56,7 @@ export default function Portfolio() {
                   <div className={styles.overlayContent}>
                     <h3>{project.title}</h3>
                     <span>{project.category}</span>
+                    <p className={styles.projectDesc}>{project.description}</p>
                   </div>
                 </div>
               </div>
