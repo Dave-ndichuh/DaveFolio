@@ -1,67 +1,88 @@
-import styles from "./Portfolio.module.css";
-import Image from "next/image";
+"use client";
 
-const projects = [
-  { 
-    id: 1, 
-    title: "ShiftsGarden", 
-    category: "SaaS Application", 
-    description: "A modern shift management and employee scheduling platform built with Next.js, Tailwind CSS, and Firebase.",
-    img: "/assets/img/portfolio/shifts_garden.png" 
-  },
-  { 
-    id: 2, 
-    title: "BriteSpot", 
-    category: "Enterprise App", 
-    description: "A robust microservices-based application featuring a Next.js frontend, NestJS backend, and Dockerized Turborepo setup.",
-    img: "/assets/img/portfolio/brite_spot.png" 
-  },
-  { 
-    id: 3, 
-    title: "AutoHub POS", 
-    category: "E-Commerce / POS", 
-    description: "A comprehensive inventory and point-of-sale management system tailored specifically for auto spare parts.",
-    img: "/assets/img/portfolio/autohub_pos.png" 
-  },
-  { 
-    id: 4, 
-    title: "EfyRun", 
-    category: "Full-Stack App", 
-    description: "A high-performance full-stack web application with decoupled frontend and backend architectures.",
-    img: "/assets/img/portfolio/efyrun.png" 
-  }
-];
+import React, { useEffect, useCallback, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import styles from "./Portfolio.module.css";
+import { projects } from "@/data/projects";
 
 export default function Portfolio() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+
+  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
+
   return (
     <section id="portfolio" className={styles.portfolioSection}>
       <div className={styles.container}>
-        <div className={styles.sectionTitle}>
-          <h2 className="neon-text">Portfolio</h2>
-          <p>A curated selection of my recent full-stack projects and SaaS applications.</p>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitle}>
+            <h2 className="neon-text">Portfolio</h2>
+            <p>A selection of my recent engineering projects.</p>
+          </div>
+          <div className={styles.carouselControls}>
+            <button 
+              className={styles.controlBtn} 
+              onClick={scrollPrev} 
+              disabled={!prevBtnEnabled}
+              aria-label="Previous Project"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button 
+              className={styles.controlBtn} 
+              onClick={scrollNext} 
+              disabled={!nextBtnEnabled}
+              aria-label="Next Project"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
         </div>
 
-        <div className={styles.grid}>
-          {projects.map(project => (
-            <div key={project.id} className={styles.portfolioItem}>
-              <div className={styles.imageWrapper}>
-                <Image 
-                  src={project.img} 
-                  alt={project.title} 
-                  fill 
-                  className={styles.image} 
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className={styles.overlay}>
-                  <div className={styles.overlayContent}>
-                    <h3>{project.title}</h3>
-                    <span>{project.category}</span>
-                    <p className={styles.projectDesc}>{project.description}</p>
+        <div className={styles.embla} ref={emblaRef}>
+          <div className={styles.emblaContainer}>
+            {projects.map((project) => (
+              <div className={styles.emblaSlide} key={project.id}>
+                <div className={`glass-card ${styles.portfolioItem}`}>
+                  <div className={styles.imageContainer}>
+                    <Image 
+                      src={project.img} 
+                      alt={project.title} 
+                      width={600} 
+                      height={400} 
+                      className={styles.projectImage}
+                    />
+                    <div className={styles.overlay}>
+                      <div className={styles.overlayContent}>
+                        <h3>{project.title}</h3>
+                        <p className={styles.category}>{project.category}</p>
+                        <p className={styles.description}>{project.shortDescription}</p>
+                        <Link href={`/portfolio/${project.slug}`} className={styles.detailsBtn}>View Details</Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

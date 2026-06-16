@@ -2,9 +2,9 @@ import styles from "./About.module.css";
 import Image from "next/image";
 
 const skills = [
-  "HTML5", "CSS3", "JavaScript", "React", "Next.js", 
-  "Bootstrap", "Django", "Python", 
-  "Data Analytics", "Graphic Design", "UI/UX"
+  "Next.js", "React", "Node.js", "NestJS", "TypeScript",
+  "Tailwind CSS", "Firebase", "Supabase", 
+  "Docker", "Turborepo", "PostgreSQL", "UI/UX Design"
 ];
 
 export default function About() {
@@ -24,7 +24,7 @@ export default function About() {
                 />
               </div>
               <div className={styles.contactInfo}>
-                <p><strong>Email:</strong> ndichudavid5@gmail.com</p>
+                <p><strong>Email:</strong> machahdavis@gmail.com</p>
                 <p><strong>Phone:</strong> (+254) 704 003 710</p>
                 <p><strong>Location:</strong> Nairobi, Kenya</p>
               </div>
@@ -33,10 +33,10 @@ export default function About() {
             <div className={styles.infoCol}>
               <h2 className="neon-text">About Me</h2>
               <p>
-                I'm David Macharia, a passionate web developer with a strong focus on crafting intuitive and dynamic user experiences. My journey began with a love for technology, and I've since honed my skills in web development, data analytics, and AI applications.
+                I'm David Macharia, a Full-Stack Software Engineer specializing in modern JavaScript frameworks and scalable backend architectures. I have a proven track record of engineering comprehensive SaaS platforms, enterprise microservices, and high-performance web applications.
               </p>
               <p>
-                I thrive on creating clean, responsive designs that bring concepts to life, using modern tools and frameworks. I believe in continuous learning and growth, always looking for new ways to improve and innovate.
+                I thrive in environments where I can build complex, data-driven systems—from intelligent Shift Management dashboards to robust Point of Sale (POS) tools using Next.js, NestJS, and Turborepo. I am deeply passionate about writing clean, maintainable code and delivering cutting-edge, user-centric experiences.
               </p>
 
               <div className={styles.skillsSection}>
