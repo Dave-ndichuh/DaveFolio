@@ -1,5 +1,5 @@
 .aboutSection {
-  padding: 100px 0;
+  padding: 60px 0;
   width: 100%;
 }
 
@@ -10,13 +10,13 @@
 }
 
 .aboutCard {
-  padding: 50px;
+  padding: 30px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 50px;
+  gap: 30px;
 }
 
 .imageCol {
