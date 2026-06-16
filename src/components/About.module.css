@@ -1,0 +1,119 @@
+.aboutSection {
+  padding: 100px 0;
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.aboutCard {
+  padding: 50px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 50px;
+}
+
+.imageCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.imageWrapper {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid var(--glass-border);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.profileImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.profileImage:hover {
+  transform: scale(1.05);
+}
+
+.contactInfo {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.contactInfo p {
+  margin: 10px 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.contactInfo strong {
+  color: var(--accent-neon);
+}
+
+.infoCol h2 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+.infoCol p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+.skillsSection {
+  margin-top: 40px;
+}
+
+.skillsSection h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.skillsTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.skillTag {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  color: var(--accent-neon);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.skillTag:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .imageWrapper {
+    max-width: 250px;
+  }
+}
