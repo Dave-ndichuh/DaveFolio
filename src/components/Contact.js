@@ -1,11 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./Contact.module.css";
-import { Mail, Phone, MapPin, Loader2, CheckCircle2 } from "lucide-react";
-import { useForm, ValidationError } from '@formspree/react';
+import { Mail, Phone, MapPin, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { sendContactEmail } from "@/app/actions/contact";
 
 export default function Contact() {
-  const [state, handleSubmit] = useForm("xnjyrdbv");
+  const [status, setStatus] = useState({ success: null, message: "" });
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsPending(true);
+    setStatus({ success: null, message: "" });
+
+    const formData = new FormData(e.currentTarget);
+    try {
+      const response = await sendContactEmail(null, formData);
+      setStatus({ success: response.success, message: response.message });
+      if (response.success) {
+        e.target.reset();
+      }
+    } catch (error) {
+      setStatus({ success: false, message: "An unexpected error occurred. Please try again." });
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   return (
     <section id="contact" className={styles.contactSection}>
@@ -50,40 +71,28 @@ export default function Contact() {
 
           <div className={styles.formCol}>
             <form className={`glass ${styles.contactForm}`} onSubmit={handleSubmit}>
-              {state.succeeded ? (
-                <div className={`${styles.statusMessage} ${styles.success}`}>
-                  <CheckCircle2 size={24} />
-                  <div>
-                    <h3 style={{ margin: "0 0 5px 0" }}>Message Sent!</h3>
-                    <p style={{ margin: 0 }}>Thank you for reaching out. I'll get back to you shortly.</p>
-                  </div>
+              <div className={styles.formGroup}>
+                <input type="text" name="name" placeholder="Your Name" required className={styles.input} disabled={isPending} />
+                <input type="email" name="email" placeholder="Your Email" required className={styles.input} disabled={isPending} />
+              </div>
+              <input type="text" name="subject" placeholder="Subject" required className={styles.input} disabled={isPending} />
+              <textarea name="message" placeholder="Message" rows="5" required className={styles.textarea} disabled={isPending}></textarea>
+              
+              <button type="submit" className={styles.submitBtn} disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 size={18} className={styles.spinner} /> Sending...
+                  </>
+                ) : (
+                  "Send Message"
+                )}
+              </button>
+
+              {status.message && (
+                <div className={`${styles.statusMessage} ${status.success ? styles.success : styles.error}`}>
+                  {status.success ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
+                  <span>{status.message}</span>
                 </div>
-              ) : (
-                <>
-                  <div className={styles.formGroup}>
-                    <input type="text" name="name" placeholder="Your Name" required className={styles.input} disabled={state.submitting} />
-                    <ValidationError prefix="Name" field="name" errors={state.errors} />
-                    
-                    <input type="email" name="email" placeholder="Your Email" required className={styles.input} disabled={state.submitting} />
-                    <ValidationError prefix="Email" field="email" errors={state.errors} />
-                  </div>
-                  
-                  <input type="text" name="subject" placeholder="Subject" required className={styles.input} disabled={state.submitting} />
-                  <ValidationError prefix="Subject" field="subject" errors={state.errors} />
-                  
-                  <textarea name="message" placeholder="Message" rows="5" required className={styles.textarea} disabled={state.submitting}></textarea>
-                  <ValidationError prefix="Message" field="message" errors={state.errors} />
-                  
-                  <button type="submit" className={styles.submitBtn} disabled={state.submitting}>
-                    {state.submitting ? (
-                      <>
-                        <Loader2 size={18} className={styles.spinner} /> Sending...
-                      </>
-                    ) : (
-                      "Send Message"
-                    )}
-                  </button>
-                </>
               )}
             </form>
           </div>
