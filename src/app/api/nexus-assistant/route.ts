@@ -11,16 +11,21 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const result = await streamText({
-    model: google("gemini-2.5-flash"),
-    messages,
-    system: `You are the Technical Liaison for Nexus Group.
+  try {
+    const result = await streamText({
+      model: google("gemini-2.5-flash"),
+      messages,
+      system: `You are the Technical Liaison for Nexus Group.
 Your primary role is to answer questions about Nexus Group's ventures, capabilities, and technical solutions based on the context provided.
 Do not hallucinate external ventures or products. Keep answers professional, technical, and concise.
 
 Context:
 Nexus Group builds agentic AI systems, smart off-grid infrastructure, and enterprise workforce tools.`,
-  });
+    });
 
-  return result.toTextStreamResponse();
+    return result.toDataStreamResponse();
+  } catch (error) {
+    console.error("AI STREAM ERROR:", error);
+    return new Response(JSON.stringify({ error: error.message || "Unknown error" }), { status: 500 });
+  }
 }
