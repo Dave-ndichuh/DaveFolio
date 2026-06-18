@@ -1,22 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { streamFlow } from "@genkit-ai/next/client";
+import { useChat } from "ai/react";
 import { MessageSquare, X, Send, Bot } from "lucide-react";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
 
 export default function NexusAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! I am the Nexus Group Technical Liaison. How can I help you today?" }
-  ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: "/api/nexus-assistant",
+    initialMessages: [
+      { id: "1", role: "assistant", content: "Hello! I am the Nexus Group Technical Liaison. How can I help you today?" }
+    ]
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -24,49 +21,7 @@ export default function NexusAssistantWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMsg = input.trim();
-    setInput("");
-    setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
-    setIsLoading(true);
-
-    try {
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-      
-      const responseStream = streamFlow({
-        url: "/api/nexus-assistant",
-        input: { question: userMsg },
-      });
-
-      for await (const chunk of responseStream.stream) {
-        setMessages((prev) => {
-          const newMessages = [...prev];
-          newMessages[newMessages.length - 1] = {
-            ...newMessages[newMessages.length - 1],
-            content: newMessages[newMessages.length - 1].content + chunk,
-          };
-          return newMessages;
-        });
-      }
-    } catch (error) {
-      console.error("Error connecting to Nexus Assistant:", error);
-      setMessages((prev) => {
-        const newMessages = [...prev];
-        newMessages[newMessages.length - 1] = {
-          ...newMessages[newMessages.length - 1],
-          content: "Connection error. Please try again later.",
-        };
-        return newMessages;
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [messages, error]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -104,8 +59,8 @@ export default function NexusAssistantWidget() {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-700">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                   msg.role === "user" 
                     ? "bg-cyan-500 text-slate-900 rounded-br-none" 
@@ -115,6 +70,15 @@ export default function NexusAssistantWidget() {
                 </div>
               </div>
             ))}
+            
+            {error && (
+              <div className="flex justify-start">
+                <div className="max-w-[80%] rounded-2xl px-4 py-2 text-sm bg-red-900/50 text-red-200 border border-red-700 rounded-bl-none">
+                  Connection error. Please try again later.
+                </div>
+              </div>
+            )}
+            
             <div ref={messagesEndRef} />
           </div>
 
@@ -124,7 +88,7 @@ export default function NexusAssistantWidget() {
               <input
                 type="text"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
                 placeholder="Ask about Nexus ventures..."
                 className="flex-1 rounded-full border border-slate-600 bg-slate-900 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                 disabled={isLoading}
