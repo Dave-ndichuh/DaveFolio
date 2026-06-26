@@ -12,14 +12,60 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "David Macharia | Web Developer",
+  metadataBase: new URL("https://machariandichu.vercel.app"),
+  title: {
+    default: "David Macharia | Web Developer",
+    template: "%s | David Macharia",
+  },
   description: "Personal portfolio of David Macharia, showcasing modern web development, data analytics, and AI applications.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "David Macharia | Web Developer",
+    description: "Personal portfolio of David Macharia, showcasing modern web development, data analytics, and AI applications.",
+    url: "https://machariandichu.vercel.app",
+    siteName: "David Macharia Portfolio",
+    images: [
+      {
+        url: "/assets/img/profile-img.jpg",
+        width: 800,
+        height: 600,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "David Macharia | Web Developer",
+    description: "Personal portfolio of David Macharia, showcasing modern web development, data analytics, and AI applications.",
+    images: ["/assets/img/profile-img.jpg"],
+  },
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "David Macharia",
+    jobTitle: "Full-Stack Web Developer",
+    url: "https://machariandichu.vercel.app",
+    sameAs: [
+      "https://github.com/dave-ndichu",
+      "https://www.linkedin.com/in/macharia-davis-493a731b7"
+    ]
+  };
+
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

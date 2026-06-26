@@ -12,6 +12,41 @@ export function generateStaticParams() {
   }));
 }
 
+// Generate dynamic metadata
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
+
+  if (!project) {
+    return { title: "Project Not Found" };
+  }
+
+  return {
+    title: project.title,
+    description: project.description || `Read about my work on ${project.title}.`,
+    alternates: {
+      canonical: `/portfolio/${project.slug}`,
+    },
+    openGraph: {
+      title: project.title,
+      description: project.description || `Read about my work on ${project.title}.`,
+      images: [
+        {
+          url: project.img,
+          width: 1200,
+          height: 600,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.description || `Read about my work on ${project.title}.`,
+      images: [project.img],
+    },
+  };
+}
+
 export default async function ProjectDetails({ params }) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
@@ -20,24 +55,42 @@ export default async function ProjectDetails({ params }) {
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: project.title,
+    description: project.description || project.longDescription?.split('\\n')[0],
+    applicationCategory: "WebApplication",
+    operatingSystem: "Web",
+    url: `https://machariandichu.vercel.app/portfolio/${project.slug}`,
+    author: {
+      "@type": "Person",
+      name: "David Macharia"
+    }
+  };
+
   return (
     <main className={styles.detailsPage}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Navigation Header */}
-      <div className={styles.navHeader}>
+      <nav className={styles.navHeader}>
         <div className={styles.container}>
           <Link href="/#portfolio" className={styles.backBtn}>
             <ArrowLeft size={20} />
             <span>Back to Portfolio</span>
           </Link>
         </div>
-      </div>
+      </nav>
 
-      <div className={styles.container}>
+      <article className={styles.container}>
         {/* Project Header */}
-        <div className={styles.projectHeader}>
+        <header className={styles.projectHeader}>
           <h1 className="neon-text">{project.title}</h1>
           <p className={styles.category}>{project.category}</p>
-        </div>
+        </header>
 
         {/* Hero Image */}
         <div className={`glass-card ${styles.heroImageContainer}`}>
@@ -54,7 +107,7 @@ export default async function ProjectDetails({ params }) {
         {/* Content Grid */}
         <div className={styles.contentGrid}>
           {/* Main Description */}
-          <div className={styles.mainContent}>
+          <section className={styles.mainContent}>
             <div className={`glass ${styles.contentBox}`}>
               <h2>Project Overview</h2>
               <div className={styles.longDescription}>
@@ -63,7 +116,7 @@ export default async function ProjectDetails({ params }) {
                 ))}
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Sidebar Meta Info */}
           <div className={styles.sidebar}>
@@ -110,7 +163,7 @@ export default async function ProjectDetails({ params }) {
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </main>
   );
 }
